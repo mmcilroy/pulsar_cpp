@@ -5,17 +5,19 @@
 int main()
 {
     const long N = 1000L * 1000L * 100L;
+    const size_t B = 256;
 
-    std::cout.imbue( std::locale( "" ) );
+    //std::cout.imbue( std::locale( "" ) );
 
     for( long j=0; j<100; j++ )
     {
-        publisher< long > p0( 1024*64 );
+        publisher< long > p0( 1024*16 );
         subscriber< long >& s0 = p0.subscribe();
 
-        std::thread t0( test_subscriber, &s0, N, 512 );
         auto start = std::chrono::high_resolution_clock::now();
-        test_publisher( &p0, N, 64 );
+        std::thread t0( test_subscriber, &s0, N, B );
+        std::thread t1( test_publisher, &p0, N, B );
+        t1.join();
         t0.join();
 
         auto millis = std::chrono::duration_cast< std::chrono::milliseconds >(
