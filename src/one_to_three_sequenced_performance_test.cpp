@@ -16,15 +16,14 @@ int main()
         subscriber< long >& s1 = s0.subscribe();
         subscriber< long >& s2 = s1.subscribe();
 
-        auto start = std::chrono::high_resolution_clock::now();
         std::thread t0( test_subscriber, &s0, N, B );
         std::thread t1( test_subscriber, &s1, N, B );
         std::thread t2( test_subscriber, &s2, N, B );
-        std::thread t3( test_publisher, &p0, N, B );
+        auto start = std::chrono::high_resolution_clock::now();
+        test_publisher( &p0, N, B );
         t0.join();
         t1.join();
         t2.join();
-        t3.join();
 
         auto millis = std::chrono::duration_cast< std::chrono::milliseconds >(
             std::chrono::high_resolution_clock::now() - start ).count();

@@ -14,10 +14,9 @@ int main()
         publisher< long > p0( 1024*16 );
         subscriber< long >& s0 = p0.subscribe();
 
-        auto start = std::chrono::high_resolution_clock::now();
         std::thread t0( test_subscriber, &s0, N, B );
-        std::thread t1( test_publisher, &p0, N, B );
-        t1.join();
+        auto start = std::chrono::high_resolution_clock::now();
+        test_publisher( &p0, N, B );
         t0.join();
 
         auto millis = std::chrono::duration_cast< std::chrono::milliseconds >(
