@@ -17,10 +17,13 @@ public:
 
     subscriber< T >& subscribe();
 
+    void unsubscribe();
+
 private:
     publisher< T >& _publisher;
     position& _head;
     position  _tail;
+    bool _alive;
 };
 
 #include "subscriber.inl"

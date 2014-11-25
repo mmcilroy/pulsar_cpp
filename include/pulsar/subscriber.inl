@@ -2,7 +2,8 @@ template< class T >
 inline subscriber< T >::subscriber( publisher< T >& p, position& h ) :
     _publisher( p ),
     _head( h ),
-    _tail( 0 )
+    _tail( h ),
+    _alive( true )
 {
 }
 
@@ -37,4 +38,10 @@ template< class T >
 inline subscriber< T >& subscriber< T >::subscribe()
 {
     return _publisher.subscribe( _tail );
+}
+
+template< class T >
+void subscriber< T >::unsubscribe()
+{
+    _alive = false;
 }

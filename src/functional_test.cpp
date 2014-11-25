@@ -46,4 +46,9 @@ int main()
     std::cout << "s0 available: " << s0.available() << std::endl;
     std::cout << "s1 available: " << s1.available() << std::endl;
     std::cout << std::endl;
+
+    s1.unsubscribe();
+    std::cout << "p0 available: " << p0.available() << std::endl;
+    s0.unsubscribe();
+    std::cout << "p0 available: " << p0.available() << std::endl;
 }
