@@ -1,13 +1,13 @@
-#include "publisher.hpp"
-#include "subscriber.hpp"
+#include "pulsar/source.hpp"
+#include "pulsar/subscription.hpp"
 #include <cassert>
 #include <iostream>
 
 int main()
 {
-    publisher< int > p0( 16 );
-    subscriber< int >& s0 = p0.subscribe();
-    subscriber< int >& s1 = s0.subscribe();
+    source< int > p0( 16 );
+    subscription< int >& s0 = p0.subscribe();
+    subscription< int >& s1 = s0.subscribe();
 
     std::cout << "p0 available: " << p0.available() << std::endl;
     std::cout << "s0 available: " << s0.available() << std::endl;
@@ -47,8 +47,8 @@ int main()
     std::cout << "s1 available: " << s1.available() << std::endl;
     std::cout << std::endl;
 
-    s1.unsubscribe();
+    s1.cancel();
     std::cout << "p0 available: " << p0.available() << std::endl;
-    s0.unsubscribe();
+    s0.cancel();
     std::cout << "p0 available: " << p0.available() << std::endl;
 }

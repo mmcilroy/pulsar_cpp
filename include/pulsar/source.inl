@@ -1,17 +1,17 @@
 template< class T >
-inline publisher< T >::publisher( size_t n ) :
+inline source< T >::source( size_t n ) :
     _queue( n ),
     _head( 0 )
 {
 }
 
 template< class T >
-inline size_t publisher< T >::available()
+inline size_t source< T >::available()
 {
     // apply memory barrier to ensure all positions are correct
     std::atomic_thread_fence( std::memory_order::memory_order_acquire );
 
-    // find the slowest subscriber
+    // find the slowest subscription
     // only consider subscriptions that are still alive
     // remove dead subscriptions
     position tail_min = std::numeric_limits< position >::max();
@@ -25,7 +25,7 @@ inline size_t publisher< T >::available()
     }
 
     // number of slots available is head - min( tail )
-    // this ensures we can never write past the slowest subscriber
+    // this ensures we can never write past the slowest subscription
     // if there are no subscriptions we cannot publish
     if( _tail.size() ) {
         return _queue.size() - ( _head - tail_min );
@@ -35,7 +35,7 @@ inline size_t publisher< T >::available()
 }
 
 template< class T >
-inline size_t publisher< T >::commit( size_t n )
+inline size_t source< T >::commit( size_t n )
 {
     // issue a memory barrier to ensure the queue is consistent
     // across threads then increment head
@@ -45,21 +45,21 @@ inline size_t publisher< T >::commit( size_t n )
 }
 
 template< class T >
-inline T& publisher< T >::at( size_t i )
+inline T& source< T >::at( size_t i )
 {
     return _queue.at( _head + i );
 }
 
 template< class T >
-inline subscriber< T >& publisher< T >::subscribe()
+inline subscription< T >& source< T >::subscribe()
 {
-    _tail.push_back( std::unique_ptr< subscriber< T > >( new subscriber< T >( *this, _head ) ) );
+    _tail.push_back( std::unique_ptr< subscription< T > >( new subscription< T >( *this, _head ) ) );
     return *_tail.back();
 }
 
 template< class T >
-inline subscriber< T >& publisher< T >::subscribe( position& h )
+inline subscription< T >& source< T >::subscribe( position& h )
 {
-    _tail.push_back( std::unique_ptr< subscriber< T > >( new subscriber< T >( *this, h ) ) );
+    _tail.push_back( std::unique_ptr< subscription< T > >( new subscription< T >( *this, h ) ) );
     return *_tail.back();
 }

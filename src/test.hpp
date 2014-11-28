@@ -1,19 +1,9 @@
-#include "subscriber.hpp"
+#include "pulsar/subscription.hpp"
+#include "pulsar/wait.hpp"
 #include <cassert>
 #include <thread>
 
-template< class T >
-inline size_t wait_till_available( T& o )
-{
-    size_t available;
-    while( ( available = o.available() ) == 0 ) {
-        std::this_thread::yield();
-    }
-
-    return available;
-}
-
-void test_publisher( publisher< long >* p, long n, size_t b=1 )
+void test_source( source< long >* p, long n, size_t b=1 )
 {
     size_t available = p->available();
     for( long i=0; i<n; )
@@ -31,7 +21,7 @@ void test_publisher( publisher< long >* p, long n, size_t b=1 )
     }
 }
 
-void test_subscriber( subscriber< long >* s, long n, size_t b=1 )
+void test_subscription( subscription< long >* s, long n, size_t b=1 )
 {
     long expected = 0, received = 0;
     size_t available = s->available();

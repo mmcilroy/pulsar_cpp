@@ -9,5 +9,5 @@ else()
 endif()
 
 set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11 -Wl,--no-as-needed -O3" )
-include_directories( include/pulsar )
+include_directories( include )
 add_subdirectory( src )

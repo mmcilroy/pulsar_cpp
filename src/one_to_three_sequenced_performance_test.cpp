@@ -11,22 +11,22 @@ int main()
 
     for( long j=0; j<100; j++ )
     {
-        publisher< long > p0( 1024*16 );
-        subscriber< long >& s0 = p0.subscribe();
-        subscriber< long >& s1 = s0.subscribe();
-        subscriber< long >& s2 = s1.subscribe();
+        source< long > p0( 1024*16 );
+        subscription< long >& s0 = p0.subscribe();
+        subscription< long >& s1 = s0.subscribe();
+        subscription< long >& s2 = s1.subscribe();
 
-        std::thread t0( test_subscriber, &s0, N, B );
-        std::thread t1( test_subscriber, &s1, N, B );
-        std::thread t2( test_subscriber, &s2, N, B );
+        std::thread t0( test_subscription, &s0, N, B );
+        std::thread t1( test_subscription, &s1, N, B );
+        std::thread t2( test_subscription, &s2, N, B );
         auto start = std::chrono::high_resolution_clock::now();
-        test_publisher( &p0, N, B );
+        test_source( &p0, N, B );
         t0.join();
         t1.join();
         t2.join();
 
         auto millis = std::chrono::duration_cast< std::chrono::milliseconds >(
-            std::chrono::high_resolution_clock::now() - start ).count();
+            std::chrono::high_resolution_clock::now() - start ).count() + 1;
 
         std::cout << ( N * 1000 ) / millis << std::endl;
     }

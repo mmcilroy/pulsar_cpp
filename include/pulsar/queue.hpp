@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <cstddef>
 #include <memory>
-#include <vector>
 
 typedef uint64_t position;
 
@@ -23,4 +22,4 @@ private:
     size_t _mask;
 };
 
-#include "queue.inl"
+#include "pulsar/queue.inl"
