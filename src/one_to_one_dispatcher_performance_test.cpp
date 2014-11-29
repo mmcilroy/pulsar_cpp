@@ -3,10 +3,10 @@
 #include <chrono>
 #include <iostream>
 
-class my_handler
+class test_handler
 {
 public:
-    my_handler( size_t n ) :
+    test_handler( size_t n ) :
         _expected( 0 ),
         _total( n-1 )
     {
@@ -32,10 +32,10 @@ int main()
 
     for( long j=0; j<100; j++ )
     {
-        my_handler h0( N );
+        test_handler h0( N );
         source< long > p0( 1024*16 );
 
-        std::thread t0( dispatch< long, my_handler >, &p0.subscribe(), &h0, B );
+        std::thread t0( dispatch< long, test_handler >, &p0.subscribe(), &h0, B );
         auto start = std::chrono::high_resolution_clock::now();
         test_source( &p0, N, B );
         t0.join();
