@@ -2,6 +2,8 @@
 
 #include "pulsar/source.hpp"
 
+namespace pulsar {
+
 template< class T >
 class subscription
 {
@@ -27,3 +29,5 @@ private:
 };
 
 #include "pulsar/subscription.inl"
+
+}

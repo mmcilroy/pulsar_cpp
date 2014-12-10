@@ -4,6 +4,8 @@
 #include <cstddef>
 #include <memory>
 
+namespace pulsar {
+
 typedef uint64_t position;
 
 template< class T >
@@ -23,3 +25,5 @@ private:
 };
 
 #include "pulsar/queue.inl"
+
+}

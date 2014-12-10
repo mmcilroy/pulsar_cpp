@@ -3,13 +3,13 @@
 #include <cassert>
 #include <thread>
 
-void test_source( source< long >* p, long n, size_t b=1 )
+void test_source( pulsar::source< long >* p, long n, size_t b=1 )
 {
     size_t available = p->available();
     for( long i=0; i<n; )
     {
         if( !available ) {
-            available = wait_till_available( *p );
+            available = pulsar::wait_till_available( *p );
         }
 
         size_t batch = std::min( available, b );
@@ -21,7 +21,7 @@ void test_source( source< long >* p, long n, size_t b=1 )
     }
 }
 
-void test_subscription( subscription< long >* s, long n, size_t b=1 )
+void test_subscription( pulsar::subscription< long >* s, long n, size_t b=1 )
 {
     long expected = 0, received = 0;
     size_t available = s->available();
@@ -29,7 +29,7 @@ void test_subscription( subscription< long >* s, long n, size_t b=1 )
     while( received != n-1 )
     {
         if( !available ) {
-            available = wait_till_available( *s );
+            available = pulsar::wait_till_available( *s );
         }
 
         size_t batch = std::min( available, b );

@@ -3,6 +3,8 @@
 #include "pulsar/subscription.hpp"
 #include "pulsar/wait.hpp"
 
+namespace pulsar {
+
 template< class T, class H >
 void dispatch( subscription< T >* s, H* h, size_t b )
 {
@@ -20,4 +22,6 @@ void dispatch( subscription< T >* s, H* h, size_t b )
     }
 
     s->cancel();
+}
+
 }

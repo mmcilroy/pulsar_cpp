@@ -3,6 +3,8 @@
 #include <chrono>
 #include <iostream>
 
+using namespace pulsar;
+
 class test_handler
 {
 public:

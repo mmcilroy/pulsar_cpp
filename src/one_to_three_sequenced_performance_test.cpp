@@ -2,6 +2,8 @@
 #include <chrono>
 #include <iostream>
 
+using namespace pulsar;
+
 int main()
 {
     const long N = 1000L * 1000L * 100L;

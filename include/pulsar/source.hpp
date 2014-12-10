@@ -5,6 +5,8 @@
 #include <limits>
 #include <vector>
 
+namespace pulsar {
+
 template< class T >
 class subscription;
 
@@ -34,3 +36,5 @@ private:
 };
 
 #include "pulsar/source.inl"
+
+}

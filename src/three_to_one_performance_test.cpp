@@ -2,6 +2,8 @@
 #include <chrono>
 #include <iostream>
 
+using namespace pulsar;
+
 void test_subscriptions( std::initializer_list< subscription< long >* > l, long n, size_t b=1 )
 {
     for( auto s : l ) {

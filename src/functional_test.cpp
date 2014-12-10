@@ -3,6 +3,8 @@
 #include <cassert>
 #include <iostream>
 
+using namespace pulsar;
+
 int main()
 {
     source< int > p0( 16 );
