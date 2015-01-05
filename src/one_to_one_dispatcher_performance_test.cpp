@@ -14,7 +14,7 @@ public:
     {
     }
 
-    inline bool on_next( const long & e, bool eob )
+    inline bool on_next( const long & e, int avail )
     {
         assert( _expected++ == e );
         return _expected != _total;

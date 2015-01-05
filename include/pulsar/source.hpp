@@ -30,9 +30,9 @@ private:
 
     typedef std::vector< std::unique_ptr< subscription< T > > > subscription_list;
 
-    queue< T > _queue;
-    position _head;
-    subscription_list _tail;
+    queue< T > queue_;
+    position head_;
+    subscription_list tail_;
 };
 
 #include "pulsar/source.inl"

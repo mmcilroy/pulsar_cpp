@@ -22,10 +22,10 @@ public:
     void cancel();
 
 private:
-    source< T >& _source;
-    position& _head;
-    position  _tail;
-    bool _alive;
+    source< T >& source_;
+    position& head_;
+    position  tail_;
+    bool alive_;
 };
 
 #include "pulsar/subscription.inl"

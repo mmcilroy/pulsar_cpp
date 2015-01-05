@@ -16,7 +16,7 @@ int main()
     const long N = 1000L* 1000L * 100L;
     const size_t B = 256;
 
-    //std::cout.imbue( std::locale( "" ) );
+    std::cout.imbue( std::locale( "" ) );
 
     for( long j=0; j<100; j++ )
     {

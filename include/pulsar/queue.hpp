@@ -19,9 +19,9 @@ public:
     T& at( position );
 
 private:
-    std::unique_ptr< T[] > _data;
-    size_t _size;
-    size_t _mask;
+    std::unique_ptr< T[] > data_;
+    size_t size_;
+    size_t mask_;
 };
 
 #include "pulsar/queue.inl"
