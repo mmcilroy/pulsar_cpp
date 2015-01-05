@@ -1,18 +1,29 @@
 #pragma once
 
+#include <chrono>
 #include <thread>
 
 namespace pulsar {
 
-template< class T >
-inline size_t wait_till_available( T& o, size_t n=1 )
+class yield_wait
 {
-    size_t available;
-    while( ( available = o.available() ) < n ) {
-        std::this_thread::yield();
-    }
+public:
+    void operator()();
+};
 
-    return available;
-}
+class yield_sleep_wait
+{
+public:
+    yield_sleep_wait();
+    void operator()();
+
+private:
+    size_t count_;
+};
+
+template< class T, class W >
+size_t wait_till_available( T& o, W& w, size_t n=1 );
+
+#include "pulsar/wait.inl"
 
 }

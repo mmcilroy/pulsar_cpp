@@ -5,11 +5,13 @@
 
 void test_source( pulsar::source< long >* p, long n, size_t b=1 )
 {
+    pulsar::yield_wait wait;
+
     size_t available = p->available();
     for( long i=0; i<n; )
     {
         if( !available ) {
-            available = pulsar::wait_till_available( *p );
+            available = pulsar::wait_till_available( *p, wait );
         }
 
         size_t batch = std::min( available, b );
@@ -23,13 +25,15 @@ void test_source( pulsar::source< long >* p, long n, size_t b=1 )
 
 void test_subscription( pulsar::subscription< long >* s, long n, size_t b=1 )
 {
+    pulsar::yield_wait wait;
+
     long expected = 0, received = 0;
     size_t available = s->available();
 
     while( received != n-1 )
     {
         if( !available ) {
-            available = pulsar::wait_till_available( *s );
+            available = pulsar::wait_till_available( *s, wait );
         }
 
         size_t batch = std::min( available, b );
