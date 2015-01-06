@@ -13,7 +13,7 @@ public:
     batch_dispatch( subscription< T >& sub, size_t min, size_t max );
 
     template< class H >
-    size_t operator()( H& handler );
+    bool operator()( H& handler, size_t& count );
 
 private:
     subscription< T >& sub_;
@@ -29,7 +29,7 @@ public:
     periodic_dispatch( size_t millis );
 
     template< class H, class D >
-    size_t operator()( D& dispatch, H& handler );
+    bool operator()( D& dispatch, H& handler, size_t& count );
 
 private:
     stopwatch watch_;
@@ -39,24 +39,6 @@ private:
 #include "pulsar/dispatch.inl"
 
 template< class T, class H >
-void dispatch( subscription< T >* s, H* h, size_t b )
-{
-    yield_wait wait;
-
-    bool want_more = true;
-    while( want_more )
-    {
-        size_t n = 0;
-        size_t available = wait_till_available( *s, wait );
-        size_t batch = std::min( b, available )-1;
-        for( ; n <= batch && want_more; n++ ) {
-            want_more = h->on_next( s->at( n ), --available );
-        }
-
-        s->commit( n );
-    }
-
-    s->cancel();
-}
+void dispatch( subscription< T >* s, H* h, size_t b );
 
 }

@@ -9,20 +9,20 @@ class test_handler
 {
 public:
     test_handler( size_t n ) :
-        _expected( 0 ),
-        _total( n-1 )
+        expected_( 0 ),
+        total_( n )
     {
     }
 
-    inline bool on_next( const long & e, int avail )
+    bool on_next( const long& e, int avail )
     {
-        assert( _expected++ == e );
-        return _expected != _total;
+        assert( expected_++ == e );
+        return expected_ == total_;
     }
 
 private:
-    long _expected;
-    long _total;
+    long expected_;
+    long total_;
 };
 
 int main()

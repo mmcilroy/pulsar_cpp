@@ -2,24 +2,28 @@
 #include "pulsar/wait.hpp"
 #include <cassert>
 #include <thread>
+#include <iostream>
 
-void test_source( pulsar::source< long >* p, long n, size_t b=1 )
+void test_source( pulsar::source< long >* p, size_t n, size_t b=1 )
 {
     pulsar::yield_wait wait;
 
     size_t available = p->available();
-    for( long i=0; i<n; )
+    long i = 0;
+
+    while( n )
     {
         if( !available ) {
             available = pulsar::wait_till_available( *p, wait );
         }
 
-        size_t batch = std::min( available, b );
+        size_t batch = std::min( available, n );
         for( size_t j=0; j<batch; j++ ) {
             p->at( j ) = i++;
         }
 
         available -= p->commit( batch );
+        n -= batch;
     }
 }
 

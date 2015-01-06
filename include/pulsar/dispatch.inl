@@ -9,9 +9,9 @@ inline batch_dispatch< T >::batch_dispatch( subscription< T >& sub, size_t min, 
 
 template< class T >
 template< class H >
-inline size_t batch_dispatch< T >::operator()( H& handler )
+inline bool batch_dispatch< T >::operator()( H& handler, size_t& count )
 {
-    size_t dispatch_count = 0;
+    bool complete = false;
 
     if( available_ < min_ ) {
         available_ = sub_.available();
@@ -19,15 +19,19 @@ inline size_t batch_dispatch< T >::operator()( H& handler )
 
     if( available_ >= min_ )
     {
-        dispatch_count = std::min( available_, max_ );
-        for( size_t i=0; i<dispatch_count; i++ ) {
-            handler.on_next( sub_.at( i ), --available_ );
+        count = std::min( available_, max_ );
+        for( size_t i=0; i<count; i++ )
+        {
+            complete = handler.on_next( sub_.at( i ), --available_ );
+            if( complete ) {
+                break;
+            }
         }
 
-        sub_.commit( dispatch_count );
+        sub_.commit( count );
     }
 
-    return dispatch_count;
+    return complete;
 }
 
 template< class T >
@@ -38,13 +42,38 @@ inline periodic_dispatch< T >::periodic_dispatch( size_t millis ) :
 
 template< class T >
 template< class H, class D >
-inline size_t periodic_dispatch< T >::operator()( D& dispatch, H& handler )
+inline bool periodic_dispatch< T >::operator()( D& dispatch, H& handler, size_t& count )
 {
+    count = 0;
+
     if( watch_.elapsed_ms() > 1000 )
     {
         watch_.start();
-        return dispatch( handler );
+        return dispatch( handler, count );
     }
 
-    return 0;
+    return false;
+}
+
+template< class T, class H >
+inline void dispatch( subscription< T >* s, H* h, size_t b )
+{
+    yield_wait wait;
+    batch_dispatch< T > dispatch( *s, 1, b );
+
+    while( 1 )
+    {
+        size_t n;
+        bool complete = dispatch( *h, n );
+
+        if( complete ) {
+            break;
+        }
+
+        if( n == 0 ) {
+            wait();
+        }
+    }
+
+    s->cancel();
 }
