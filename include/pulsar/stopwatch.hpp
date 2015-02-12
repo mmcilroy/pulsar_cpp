@@ -17,6 +17,6 @@ private:
     std::chrono::time_point< std::chrono::high_resolution_clock > start_;
 };
 
-#include "pulsar/stopwatch.hpp"
+#include "pulsar/stopwatch.inl"
 
 }
