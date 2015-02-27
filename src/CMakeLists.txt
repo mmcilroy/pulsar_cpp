@@ -1,3 +1,6 @@
+add_executable( one_to_one_std_queue_performance_test one_to_one_std_queue_performance_test.cpp )
+target_link_libraries( one_to_one_std_queue_performance_test pthread )
+
 add_executable( one_to_one_performance_test one_to_one_performance_test.cpp )
 target_link_libraries( one_to_one_performance_test pthread )
 

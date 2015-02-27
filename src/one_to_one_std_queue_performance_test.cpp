@@ -1,31 +1,50 @@
+#include <condition_variable>
 #include <queue>
-#include <mutex>
+#include <chrono>
 #include <thread>
 #include <iostream>
 
-std::queue< long > data;
-std::mutex mut;
+template< typename T >
+class concurrent_queue
+{
+public:
+    void push( T const& t )
+    {
+        std::lock_guard< std::mutex > lock( mut_ );
+        data_.push( t );
+        cond_.notify_one();
+    }
+
+    T pop()
+    {
+        std::unique_lock< std::mutex > lock( mut_ );
+        cond_.wait( lock, [&]{
+            return !data_.empty();
+        } );
+        T t = data_.front();
+        data_.pop();
+        return t;
+    }
+
+private:
+    std::mutex mut_;
+    std::condition_variable cond_;
+    std::queue< T > data_;
+};
+
+concurrent_queue< long > queue;
 
 void publish( size_t n )
 {
-    for( size_t i=0; i<n; i++ )
-    {
-        std::lock_guard< std::mutex > lock( mut );
-        data.push( i );
+    for( size_t i=0; i<n; i++ ) {
+        queue.push( i );
     }
 }
 
 void subscribe( size_t n )
 {
-    for( size_t i=0; i<n; )
-    {
-        std::lock_guard< std::mutex > lock( mut );
-        if( data.empty() ) {
-            continue;
-        }
-        int e = data.front();
-        data.pop();
-        ++i;
+    for( size_t i=0; i<n; i++ ) {
+        long j = queue.pop();
     }
 }
 

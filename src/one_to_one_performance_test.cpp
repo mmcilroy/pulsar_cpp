@@ -1,5 +1,6 @@
 #include "test.hpp"
 #include <chrono>
+#include <functional>
 #include <iostream>
 
 using namespace pulsar;
@@ -7,7 +8,7 @@ using namespace pulsar;
 int main()
 {
     const long N = 1000L * 1000L * 100L;
-    const size_t B = 256;
+    const size_t B = 250;
 
     std::cout.imbue( std::locale( "" ) );
 
@@ -18,7 +19,7 @@ int main()
 
         std::thread t0( test_subscription, &s0, N, B );
         auto start = std::chrono::high_resolution_clock::now();
-        test_source( &p0, N, B );
+        test_source( &p0, N, 1 );
         t0.join();
 
         auto millis = std::chrono::duration_cast< std::chrono::milliseconds >(
