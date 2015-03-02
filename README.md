@@ -22,7 +22,7 @@ Pulsar applications are implemented in terms of publishers and subscribers. A pu
     pulsar::subscriber< long >& s2 = p.subscribe();
 ```
 
-In the example above there are 3 subscribers - each one will receive the data published by p. All subscribers are operate in parallel - there are no guarantees about the order in which each subscriber will see the data. If p publishers item 1, s1 might see that data before s0 or s2.
+In the example above there are 3 subscribers - each one will receive the data published by p. All subscribers operate in parallel - there are no guarantees about the order in which each subscriber will see the data. If p publishers item 1, s1 might see that data before s0 or s2.
 
 It is also possible to chain subscribers together to create a pipeline processing arrangement. For example
 
@@ -63,3 +63,6 @@ java disruptor
 c++ disruptor 
 c++ pulsar
 c++ concurrent queue
+
+**Building**
+
