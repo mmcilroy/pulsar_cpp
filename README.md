@@ -57,12 +57,24 @@ The publish() method expects 2 arguments. Argument 1 is the number of data items
 
 **Performance**
 
-The following table shows how the rate at which data items can be passed between a single publisher and subscriber.
+The following table compares the performance of pulsar against
 
-java disruptor
-c++ disruptor 
-c++ pulsar
-c++ concurrent queue
+* LMAX disruptor 3.3.2 (jdk 8u31) https://github.com/LMAX-Exchange/disruptor
+* disruptor-- (most popular C++ disruptor implementation on github) https://github.com/fsaintjacques/disruptor--
+* A thread safe std queue implementation using condition variables for synchronization
+
+The test case for each is to pass 100 billion items of data (longs) between 2 threads and measure the time taken to calculate the rate at which data is passed (operations per second)
+
+All tests were executed on a Intel i5 4590 3.30GHz CPU
+
+The source code for the pulsar test can be found here - https://github.com/mmcilroy/pulsar_cpp/blob/master/src/one_to_one_performance_test.cpp
+
+tech           | ops
+---------------|------------
+pulsar         | 291,923,762
+disruptor java | 186,572,620
+disruptor--    |   7,328,783
+std queue      |   8,244,023
 
 **Building**
 
