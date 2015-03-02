@@ -1,29 +1,25 @@
-inline void yield_wait::operator()()
+inline void yield_wait_strategy::wait()
 {
     std::this_thread::yield();
-}   
-
-inline yield_sleep_wait::yield_sleep_wait() :
-    count_( 0 )
-{
 }
 
-inline void yield_sleep_wait::operator()()
+inline void yield_wait_strategy::notify()
 {
-    if( ++count_ < 100 ) {
-        std::this_thread::yield();
-    } else {
-        std::this_thread::sleep_for( std::chrono::microseconds( 5000 ) );
-    }
+    ;
 }
 
-template< class T, class W >
-inline size_t wait_till_available( T& o, W& w, size_t n=1 )
+inline void block_wait_strategy::wait()
 {
-    size_t available;
-    while( ( available = o.available() ) < n ) {
-        w();
-    }
+    std::unique_lock< std::mutex > lock( mut_ );
+    cond_.wait( lock, [&]{
+        return ready_ == true;
+    } );
+    ready_ = false;
+}
 
-    return available;
+inline void block_wait_strategy::notify()
+{
+    std::unique_lock< std::mutex > lock( mut_ );
+    ready_ = true;
+    cond_.notify_one();
 }

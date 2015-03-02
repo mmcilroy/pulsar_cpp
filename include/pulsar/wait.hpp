@@ -1,44 +1,31 @@
 #pragma once
 
-#include <chrono>
+#include <atomic>
+#include <condition_variable>
 #include <thread>
 
 namespace pulsar {
 
-class wait_strategy
+class yield_wait_strategy
 {
 public:
-    void wait() {
-        std::this_thread::yield();
-    }
+    void wait();
 
-    void notify() {
-        ;
-    }
+    void notify();
 };
 
-
-
-
-
-class yield_wait
+class block_wait_strategy
 {
 public:
-    void operator()();
-};
+    void wait();
 
-class yield_sleep_wait
-{
-public:
-    yield_sleep_wait();
-    void operator()();
+    void notify();
 
 private:
-    size_t count_;
+    std::atomic< bool > ready_ = { false };
+    std::condition_variable cond_;
+    std::mutex mut_;
 };
-
-template< class T, class W >
-size_t wait_till_available( T& o, W& w, size_t n=1 );
 
 #include "pulsar/wait.inl"
 

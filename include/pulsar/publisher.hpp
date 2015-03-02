@@ -11,7 +11,7 @@ namespace pulsar {
 template< typename E, typename S, typename P >
 class subscriber;
 
-template< typename E, typename S=wait_strategy, typename P=wait_strategy >
+template< typename E, typename S=yield_wait_strategy, typename P=yield_wait_strategy >
 class publisher
 {
 friend class subscriber< E, S, P >;

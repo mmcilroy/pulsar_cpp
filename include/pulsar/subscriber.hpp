@@ -6,7 +6,7 @@
 
 namespace pulsar {
 
-template< typename E, typename S=wait_strategy, typename P=wait_strategy >
+template< typename E, typename S=yield_wait_strategy, typename P=yield_wait_strategy >
 class subscriber
 {
 friend class publisher< E, S, P >;
