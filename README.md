@@ -69,7 +69,7 @@ All tests were executed on a Intel i5 4590 3.30GHz CPU
 
 The source code for the pulsar test can be found here - https://github.com/mmcilroy/pulsar_cpp/blob/master/src/one_to_one_performance_test.cpp
 
-tech           | ops
+tech           | ops/s
 ---------------|------------
 pulsar         | 291,923,762
 disruptor java | 186,572,620
