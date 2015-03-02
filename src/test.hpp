@@ -1,52 +1,38 @@
-#include "pulsar/subscription.hpp"
-#include "pulsar/wait.hpp"
+#pragma once
+
+#include "pulsar/subscriber.hpp"
 #include <cassert>
-#include <thread>
-#include <iostream>
 
-void test_source( pulsar::source< long >* p, size_t n, size_t b=1 )
+using namespace pulsar;
+
+const long N = 1000L * 1000L * 100L;
+const size_t Q = 16 * 1024;
+const size_t B = 1;
+const size_t I = 100;
+
+void do_publish( publisher< long >& p )
 {
-    pulsar::yield_wait wait;
-
-    size_t available = p->available();
-    long i = 0;
-
-    while( n )
-    {
-        if( !available ) {
-            available = pulsar::wait_till_available( *p, wait );
-        }
-
-        size_t batch = std::min( available, n );
-        for( size_t j=0; j<batch; j++ ) {
-            p->at( j ) = i++;
-        }
-
-        available -= p->commit( batch );
-        n -= batch;
+    for( size_t i=0; i<N; ) {
+        p.publish( B, [&]( long& e ){
+            e = i++;
+        } );
     }
 }
 
-void test_subscription( pulsar::subscription< long >* s, long n, size_t b=1 )
+void do_subscribe( subscriber< long >* s )
 {
-    pulsar::yield_wait wait;
+    int i=0;
+    s->subscribe( [&]( const long& e ) {
+        assert( e == i++ );
+        return e < N-1;
+    } );
+}
 
-    long expected = 0, received = 0;
-    size_t available = s->available();
-
-    while( received != n-1 )
-    {
-        if( !available ) {
-            available = pulsar::wait_till_available( *s, wait );
-        }
-
-        size_t batch = std::min( available, b );
-        for( size_t i=0; i<batch; i++ )
-        {
-            received = s->at( i );
-            assert( expected++ == received );
-        }
-
-        available -= s->commit( batch );
-    }
+void do_subscribe_debug( subscriber< long >* s )
+{
+    int i=0;
+    s->subscribe( [&]( const long& e ) {
+        std::cout << e << std::endl;
+        return e < N-1;
+    } );
 }

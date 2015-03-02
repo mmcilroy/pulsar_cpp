@@ -5,6 +5,22 @@
 
 namespace pulsar {
 
+class wait_strategy
+{
+public:
+    void wait() {
+        std::this_thread::yield();
+    }
+
+    void notify() {
+        ;
+    }
+};
+
+
+
+
+
 class yield_wait
 {
 public:

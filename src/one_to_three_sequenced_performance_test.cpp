@@ -6,23 +6,20 @@ using namespace pulsar;
 
 int main()
 {
-    const long N = 1000L * 1000L * 100L;
-    const size_t B = 256;
-
     std::cout.imbue( std::locale( "" ) );
 
-    for( long j=0; j<100; j++ )
+    for( long j=0; j<I; j++ )
     {
-        source< long > p0( 1024*16 );
-        subscription< long >& s0 = p0.subscribe();
-        subscription< long >& s1 = s0.subscribe();
-        subscription< long >& s2 = s1.subscribe();
+        publisher< long > p0( Q );
+        subscriber< long >& s0 = p0.subscribe();
+        subscriber< long >& s1 = s0.subscribe();
+        subscriber< long >& s2 = s1.subscribe();
+        std::thread t0( do_subscribe, &s0 );
+        std::thread t1( do_subscribe, &s1 );
+        std::thread t2( do_subscribe, &s2 );
 
-        std::thread t0( test_subscription, &s0, N, B );
-        std::thread t1( test_subscription, &s1, N, B );
-        std::thread t2( test_subscription, &s2, N, B );
         auto start = std::chrono::high_resolution_clock::now();
-        test_source( &p0, N, B );
+        do_publish( p0 );
         t0.join();
         t1.join();
         t2.join();
