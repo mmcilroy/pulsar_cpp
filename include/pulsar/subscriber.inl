@@ -22,7 +22,7 @@ inline void subscriber< E, S, P >::subscribe( F func )
         // dispatch available slots to func
         int i;
         for( i=0; i<avail; i++ ) {
-            if( func( at( i ) ) == false ) {
+            if( func( at( i ), avail-i-1 ) == false ) {
                 alive_ = false; break;
             }
         }

@@ -22,7 +22,7 @@ void do_publish( publisher< long >& p )
 void do_subscribe( subscriber< long >* s )
 {
     int i=0;
-    s->subscribe( [&]( const long& e ) {
+    s->subscribe( [&]( const long& e, size_t a ) {
         assert( e == i++ );
         return e < N-1;
     } );
@@ -31,8 +31,8 @@ void do_subscribe( subscriber< long >* s )
 void do_subscribe_debug( subscriber< long >* s )
 {
     int i=0;
-    s->subscribe( [&]( const long& e ) {
-        std::cout << e << std::endl;
+    s->subscribe( [&]( const long& e, size_t a ) {
+        std::cout << "data: " << e << ", rem: " << a << std::endl;
         return e < N-1;
     } );
 }
