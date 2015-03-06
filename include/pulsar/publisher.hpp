@@ -8,20 +8,20 @@
 
 namespace pulsar {
 
-template< typename E, typename S, typename P >
+template< typename E, typename W >
 class subscriber;
 
-template< typename E, typename S=yield_wait_strategy, typename P=yield_wait_strategy >
+template< typename E, typename W=yield_wait_strategy >
 class publisher
 {
-friend class subscriber< E, S, P >;
+friend class subscriber< E, W >;
 public:
     publisher( size_t n );
 
     template< typename F >
     void publish( size_t, F func );
 
-    subscriber< E, S, P >& subscribe();
+    subscriber< E, W >& subscribe();
 
 private:
     size_t available();
@@ -30,18 +30,17 @@ private:
 
     void commit( size_t n );
 
-    subscriber< E, S, P >& subscribe( position& );
+    subscriber< E, W >& subscribe( position& );
 
     typedef std::vector< std::unique_ptr<
-        subscriber< E, S, P > > > subscriber_list;
+        subscriber< E, W > > > subscriber_list;
 
     queue< E > queue_;
     position head_;
     subscriber_list tail_;
     size_t avail_;
 
-    S swait_;
-    P pwait_;
+    W wait_;
 };
 
 #include "pulsar/publisher.inl"

@@ -19,7 +19,7 @@ int main()
         std::thread t2( do_subscribe, &s2 );
 
         auto start = std::chrono::high_resolution_clock::now();
-        do_publish( p0 );
+        do_publish( &p0 );
         t0.join();
         t1.join();
         t2.join();

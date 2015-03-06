@@ -21,5 +21,5 @@ inline void block_wait_strategy::notify()
 {
     std::unique_lock< std::mutex > lock( mut_ );
     ready_ = true;
-    cond_.notify_one();
+    cond_.notify_all();
 }

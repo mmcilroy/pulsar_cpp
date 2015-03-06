@@ -15,7 +15,7 @@ int main()
         std::thread t0( do_subscribe, &s0 );
 
         auto start = std::chrono::high_resolution_clock::now();
-        do_publish( p0 );
+        do_publish( &p0 );
         t0.join();
 
         auto millis = std::chrono::duration_cast< std::chrono::milliseconds >(

@@ -10,10 +10,10 @@ const size_t Q = 16 * 1024;
 const size_t B = 1;
 const size_t I = 100;
 
-void do_publish( publisher< long >& p )
+void do_publish( publisher< long >* p )
 {
     for( size_t i=0; i<N; ) {
-        p.publish( B, [&]( long& e ){
+        p->publish( B, [&]( long& e ){
             e = i++;
         } );
     }

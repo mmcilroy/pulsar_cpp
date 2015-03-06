@@ -1,5 +1,5 @@
-template< typename E, typename S, typename P >
-inline subscriber< E, S, P >::subscriber( publisher< E, S, P >& p, position& h ) :
+template< typename E, typename W >
+inline subscriber< E, W >::subscriber( publisher< E, W >& p, position& h ) :
     publisher_( p ),
     head_( h ),
     tail_( h ),
@@ -7,16 +7,16 @@ inline subscriber< E, S, P >::subscriber( publisher< E, S, P >& p, position& h )
 {
 }
 
-template< typename E, typename S, typename P >
+template< typename E, typename W >
 template< typename F >
-inline void subscriber< E, S, P >::subscribe( F func )
+inline void subscriber< E, W >::subscribe( F func )
 {
     while( alive_ )
     {
         // wait for publisher to publish
         size_t avail = 0;
         while( ( avail = available() ) < 1 ) {
-            publisher_.swait_.wait();
+            publisher_.wait_.wait();
         }
 
         // dispatch available slots to func
@@ -32,8 +32,36 @@ inline void subscriber< E, S, P >::subscribe( F func )
     }
 }
 
-template< typename E, typename S, typename P >
-inline size_t subscriber< E, S, P >::available()
+template< typename E, typename W >
+template< typename F >
+inline size_t subscriber< E, W >::dispatch( F func )
+{
+    if( alive_ )
+    {
+        // wait for publisher to publish
+        size_t avail = available();
+        if( avail )
+        {
+            // dispatch available slots to func
+            int i;
+            for( i=0; i<avail; i++ ) {
+                if( func( at( i ), avail-i-1 ) == false ) {
+                    alive_ = false; break;
+                }
+            }
+
+            // make changes available to publisher
+            commit( i );
+
+            return i;
+        }
+    }
+
+    return 0;
+}
+
+template< typename E, typename W >
+inline size_t subscriber< E, W >::available()
 {
     // apply memory barrier to ensure all positions are correct
     std::atomic_thread_fence( std::memory_order::memory_order_acquire );
@@ -43,30 +71,29 @@ inline size_t subscriber< E, S, P >::available()
     return head_ - tail_;
 }
 
-template< typename E, typename S, typename P >
-inline const E& subscriber< E, S, P >::at( size_t i )
+template< typename E, typename W >
+inline const E& subscriber< E, W >::at( size_t i )
 {
     return publisher_.queue_.at( tail_ + i );
 }
 
-template< typename E, typename S, typename P >
-inline void subscriber< E, S, P >::commit( size_t n )
+template< typename E, typename W >
+inline void subscriber< E, W >::commit( size_t n )
 {
     // issue a memory barrier to ensure the queue is consistent
     // across threads then increment tail
     std::atomic_thread_fence( std::memory_order::memory_order_release );
     tail_ += n;
-    publisher_.pwait_.notify();
 }
 
-template< typename E, typename S, typename P >
-inline subscriber< E, S, P >& subscriber< E, S, P >::subscribe()
+template< typename E, typename W >
+inline subscriber< E, W >& subscriber< E, W >::subscribe()
 {
     return publisher_.subscribe( tail_ );
 }
 
-template< typename E, typename S, typename P >
-inline void subscriber< E, S, P >::cancel()
+template< typename E, typename W >
+inline void subscriber< E, W >::cancel()
 {
     alive_ = false;
 }

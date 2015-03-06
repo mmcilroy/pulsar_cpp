@@ -6,17 +6,20 @@
 
 namespace pulsar {
 
-template< typename E, typename S=yield_wait_strategy, typename P=yield_wait_strategy >
+template< typename E, typename W=yield_wait_strategy >
 class subscriber
 {
-friend class publisher< E, S, P >;
+friend class publisher< E, W >;
 public:
-    subscriber( publisher< E, S, P >& p, position& h );
+    subscriber( publisher< E, W >& p, position& h );
 
     template< typename F >
     void subscribe( F func );
 
-    subscriber< E, S, P >& subscribe();
+    template< typename F >
+    size_t dispatch( F func );
+
+    subscriber< E, W >& subscribe();
 
     void cancel();
 
@@ -27,7 +30,7 @@ private:
 
     void commit( size_t n );
 
-    publisher< E, S, P >& publisher_;
+    publisher< E, W >& publisher_;
     position& head_;
     position  tail_;
     std::atomic< bool > alive_;
